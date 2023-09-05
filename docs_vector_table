@@ -1,0 +1,6 @@
+CREATE TABLE [dbo].[site_docs_vector](
+	[doc_id] [int] NOT NULL,
+	[vector_value_id] [int] NOT NULL,
+	[vector_value] [float] NOT NULL
+) ON [PRIMARY]
+GO
