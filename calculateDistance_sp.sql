@@ -1,6 +1,18 @@
+/****** Object:  StoredProcedure [dbo].[calculateDistance]    Script Date: 05/09/2023 13:43:05 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:      <Author, , Name>
+-- Create Date: <Create Date, , >
+-- Description: <Description, , >
+-- =============================================
 CREATE PROCEDURE [dbo].[calculateDistance]
 (
-    @vectorJson nvarchar(max)
+    @VectorJson nvarchar(max)
 )
 AS
 BEGIN
@@ -12,7 +24,7 @@ BEGIN
 		cast([key] as int) as vector_value_id,
 		cast([value] as float) as vector_value
 	into #t
-	FROM openjson(@vectorJson);
+	FROM openjson(@VectorJson);
 
 	-- select * from #t
 
