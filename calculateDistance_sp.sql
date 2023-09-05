@@ -1,4 +1,4 @@
-/****** Object:  StoredProcedure [dbo].[calculateDistance]    Script Date: 05/09/2023 13:43:05 ******/
+/****** Object:  StoredProcedure [dbo].[calculateDistance]    Script Date: 05/09/2023 13:46:18 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -41,7 +41,7 @@ BEGIN
 	order by
 		cosine_distance desc
 
-	select 
+	select top 5
 		a.id,
 		a.title,
 		a.url,
