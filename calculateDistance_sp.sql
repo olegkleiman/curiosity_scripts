@@ -22,24 +22,19 @@ BEGIN
 
 	declare @retval int, @response nvarchar(max)
 	declare @headers nvarchar(max)
-	set @headers = json_object(
-		'api-key':'1caa8932bf794b3b9046446b65130822',
-		'Content-Type': 'application/json'
-	)
-	if exists(select * from sys.[database_scoped_credentials] 
-				where name = 'https://curiosity.openai.azure.com')
+	if exists(select * from sys.[database_scoped_credentials] where name = 'https://curiosity.openai.azure.com')
 	begin
 		drop database scoped credential [https://curiosity.openai.azure.com];
 	end
 	create database scoped credential [https://curiosity.openai.azure.com]
-	with identity = 'HTTPEndpointHeaders', secret = '{"api-key": "s__sk-f28aRxV7j6CAmknyOHDET3BlbkFJv72pZ1CiLLEjyhvW0gAz__"}';
+	with identity = 'HTTPEndpointHeaders', secret = '{"api-key": "1caa8932bf794b3b9046446b65130822"}';
 	
 	declare @payload nvarchar(max) = json_object('input': @inputText);
 
 	exec @retval = sp_invoke_external_rest_endpoint
 		@url = 'https://curiosity.openai.azure.com/openai/deployments/curiosity_deployment/embeddings?api-version=2022-12-01',
 		@method = 'POST',
-		@headers = @headers,
+		@credential = [https://curiosity.openai.azure.com],
 		@payload = @payload,
 		@response = @response output;
 
