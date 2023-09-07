@@ -21,7 +21,11 @@ BEGIN
     SET NOCOUNT ON
 
 	declare @retval int, @response nvarchar(max)
-	declare @headers nvarchar(max) = N'{"api-key":"1caa8932bf794b3b9046446b65130822"}'
+	declare @headers nvarchar(max)
+	set @headers = json_object(
+		'api-key':'1caa8932bf794b3b9046446b65130822',
+		'Content-Type': 'application/json'
+	)
 	declare @payload nvarchar(max) = json_object('input': @inputText);
 
 	exec @retval = sp_invoke_external_rest_endpoint
@@ -72,6 +76,3 @@ BEGIN
 	drop table #t
 
 END
-GO
-
-
