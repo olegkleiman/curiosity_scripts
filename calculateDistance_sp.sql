@@ -1,4 +1,4 @@
-/****** Object:  StoredProcedure [dbo].[calculateDistance]    Script Date: 05/09/2023 13:46:18 ******/
+/****** Object:  StoredProcedure [dbo].[calculateDistance]    Script Date: 07/09/2023 17:17:18 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -12,7 +12,7 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[calculateDistance]
 (
-    @VectorJson nvarchar(max)
+   @inputText nvarchar(max)
 )
 AS
 BEGIN
@@ -20,13 +20,28 @@ BEGIN
     -- interfering with SELECT statements.
     SET NOCOUNT ON
 
-	SELECT
-		cast([key] as int) as vector_value_id,
-		cast([value] as float) as vector_value
-	into #t
-	FROM openjson(@VectorJson);
+	declare @retval int, @response nvarchar(max)
+	declare @headers nvarchar(max) = N'{"api-key":"1caa8932bf794b3b9046446b65130822"}'
+	declare @payload nvarchar(max) = json_object('input': @inputText);
 
-	-- select * from #t
+	exec @retval = sp_invoke_external_rest_endpoint
+		@url = 'https://curiosity.openai.azure.com/openai/deployments/curiosity_deployment/embeddings?api-version=2022-12-01',
+		@method = 'POST',
+		@headers = @headers,
+		@payload = @payload,
+		@response = @response output;
+
+	drop table if exists #response;
+	select @response as [response] into #response;
+
+	drop table if exists #t;
+	select 
+		cast([key] as int) as [vector_value_id],
+		cast([value] as float) as [vector_value]
+	into    
+		#t
+	from 
+		openjson(@response, '$.result.data[0].embedding')
 
 	select
 		v2.doc_id,
