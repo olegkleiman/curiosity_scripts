@@ -26,6 +26,14 @@ BEGIN
 		'api-key':'1caa8932bf794b3b9046446b65130822',
 		'Content-Type': 'application/json'
 	)
+	if exists(select * from sys.[database_scoped_credentials] 
+				where name = 'https://curiosity.openai.azure.com')
+	begin
+		drop database scoped credential [https://curiosity.openai.azure.com];
+	end
+	create database scoped credential [https://curiosity.openai.azure.com]
+	with identity = 'HTTPEndpointHeaders', secret = '{"api-key": "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"}';
+	
 	declare @payload nvarchar(max) = json_object('input': @inputText);
 
 	exec @retval = sp_invoke_external_rest_endpoint
