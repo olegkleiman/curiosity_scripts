@@ -32,7 +32,7 @@ BEGIN
 		drop database scoped credential [https://curiosity.openai.azure.com];
 	end
 	create database scoped credential [https://curiosity.openai.azure.com]
-	with identity = 'HTTPEndpointHeaders', secret = '{"api-key": "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"}';
+	with identity = 'HTTPEndpointHeaders', secret = '{"api-key": "s__sk-f28aRxV7j6CAmknyOHDET3BlbkFJv72pZ1CiLLEjyhvW0gAz__"}';
 	
 	declare @payload nvarchar(max) = json_object('input': @inputText);
 
