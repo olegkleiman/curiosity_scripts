@@ -9,10 +9,11 @@ CREATE PROCEDURE [dbo].[find_Nearest]
 (
    @inputText nvarchar(max),
    @top int,
-   @inRegion geography
+   @inRegion geography = NULL
 )
 AS
 BEGIN
+
     -- SET NOCOUNT ON added to prevent extra result sets from
     -- interfering with SELECT statements.
     SET NOCOUNT ON
@@ -60,17 +61,29 @@ BEGIN
 	order by
 		cosine_distance desc
 
-	select top (@top)
-		a.id,
-		a.title,
-		a.url,
-		r.cosine_distance
-	from #results r
-	inner join 
-		[dbo].[site_docs] a on r.doc_id = a.id
-	where @inRegion.STContains([location]) = 1
-	order by
-		cosine_distance desc
+	if @inRegion is not null
+		select top (@top)
+			a.id,
+			a.title,
+			a.url,
+			r.cosine_distance
+		from #results r
+		inner join 
+			[dbo].[site_docs] a on r.doc_id = a.id
+		where @inRegion.STContains([location]) = 1
+		order by
+			cosine_distance desc
+	else
+		select top (@top)
+			a.id,
+			a.title,
+			a.url,
+			r.cosine_distance
+		from #results r
+		inner join 
+			[dbo].[site_docs] a on r.doc_id = a.id
+		order by
+			cosine_distance desc
 	
 
 	drop table #results
