@@ -1,6 +1,16 @@
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
 CREATE TABLE [dbo].[site_docs_vector](
 	[doc_id] [int] NOT NULL,
 	[vector_value_id] [int] NOT NULL,
-	[vector_value] [float] NOT NULL
+	[vector_value] [float] NOT NULL,
+	[model_id] [int] NULL
 ) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[site_docs_vector] ADD  CONSTRAINT [DF_site_docs_vector_embedding_provider_id]  DEFAULT ((1)) FOR [model_id]
 GO
