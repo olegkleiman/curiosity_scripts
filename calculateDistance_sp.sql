@@ -5,14 +5,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
--- =============================================
--- Author:      <Author, , Name>
--- Create Date: <Create Date, , >
--- Description: <Description, , >
--- =============================================
-CREATE PROCEDURE [dbo].[calculateDistance]
+CREATE PROCEDURE [dbo].[find_Nearest]
 (
-   @inputText nvarchar(max)
+   @inputText nvarchar(max),
+   @top int,
+   @inRegion geography
 )
 AS
 BEGIN
@@ -63,7 +60,7 @@ BEGIN
 	order by
 		cosine_distance desc
 
-	select top 5
+	select top (@top)
 		a.id,
 		a.title,
 		a.url,
@@ -71,6 +68,7 @@ BEGIN
 	from #results r
 	inner join 
 		[dbo].[site_docs] a on r.doc_id = a.id
+	where @inRegion.STContains([location]) = 1
 	order by
 		cosine_distance desc
 	
